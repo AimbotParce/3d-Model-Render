@@ -1,1 +1,2 @@
-renders/**
+renders/*
+!renders/.gitkeep
