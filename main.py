@@ -1,4 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 import cv2
@@ -13,13 +12,13 @@ testScene = Scene([testCube], (246, 186, 108))
 
 testCamera = Camera("testCamera", [-5, 0, 0], [0, 0, 0], 5, [100, 100], 100, testScene)
 
-testCamera.set_thread_pool(ThreadPoolExecutor(max_workers=8))
 
 start = datetime.now()
 print(f"[{start.strftime('%H:%M:%S')}] Rendering...")
 cv2.startWindowThread()
-# cv2.namedWindow("Image", cv2.WINDOW_FREERATIO)
+cv2.namedWindow("Image", cv2.WINDOW_FREERATIO)
 img = testCamera.get_image()
 print(f"[{datetime.now().strftime('%H:%M:%S')}] Done! ({datetime.now() - start})")
+print(img.shape)
 cv2.imshow("Image", img)
 cv2.waitKey(0)

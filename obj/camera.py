@@ -1,5 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor
-
 import numpy as np
 from bin.objectClass import Object
 
@@ -17,9 +15,6 @@ class Camera(Object):
         self.depth = depth
         self.executor = None
         super().__init__(name, (0, 0, 0), origin, rotation, [1, 1, 1])
-
-    def set_thread_pool(self, executor: ThreadPoolExecutor):
-        self.executor = executor
 
     def get_vertices(self):
         """I'll use vertices to get the local vectors of the camera."""
@@ -65,9 +60,6 @@ class Camera(Object):
 
     def get_image(self):
         """Get the image of the objects from the camera."""
-        if self.executor is not None:
-            print("Using parallel image generation...")
-            return self.__get_image_parallel()
 
         return np.array(
             [
@@ -86,33 +78,3 @@ class Camera(Object):
         #         image[y, x] = self.__cast_ray_color(x - self.resolution[1], y - self.resolution[0])
 
         # return image
-
-    def __get_image_parallel(self):
-        """Get the image of the objects from the camera."""
-        image = np.ones((self.resolution[1], self.resolution[0], 3), np.uint8) * self.scene.backgroundColor
-
-        def get_row(y):
-            return np.array(
-                list(
-                    [
-                        self.__cast_ray_color(x - self.resolution[1], y - self.resolution[0])
-                        for x in range(self.resolution[1])
-                    ]
-                )
-            )
-            # row = np.ones((self.resolution[1], 3), np.uint8) * self.scene.backgroundColor
-
-            # for x in range(self.resolution[1]):
-            #     row[x] = self.__cast_ray_color(x - self.resolution[1], y - self.resolution[0])
-
-        futures = [self.executor.submit(get_row, y) for y in range(self.resolution[0])]
-        # for y in range(self.resolution[0]):
-        #     futures.append(self.executor.submit(get_row, y))
-
-        image = np.array([future.result() for future in futures])
-        # for y, row in enumerate(futures):
-        #     image[y] = row.result()
-
-        print("Done generating image.")
-        print(image)
-        return image
