@@ -5,15 +5,16 @@ from obj.scene import Scene
 
 
 class Camera(Object):
-    def __init__(self, name, origin, rotation, focalLength, resolution, depth, scene: Scene):
+    def __init__(self, name, origin, rotation, resolution, sensor, focal, depth, scene: Scene):
         self.name = name
         self.origin = origin
         self.rotation = rotation
-        self.focalLength = focalLength
+        self.focal = focal
         self.resolution = resolution
         self.scene = scene
         self.depth = depth
-        self.executor = None
+        self.sensor = sensor
+
         super().__init__(name, (0, 0, 0), origin, rotation, [1, 1, 1])
 
     def get_vertices(self):
@@ -33,7 +34,11 @@ class Camera(Object):
 
     def __get_ray_direction(self, x, y):
         """Get the ray from the camera origin to the pixel (x, y)."""
-        vector = self.vx * x + self.vy * y + self.vz * self.focalLength
+        vector = (
+            self.vx * self.focal
+            - self.vy * (x / self.resolution[1]) * self.sensor[1]
+            + self.vz * (y / self.resolution[0]) * self.sensor[0]
+        )
         return vector / np.linalg.norm(vector)
 
     def __cast_ray(self, x, y):
@@ -42,21 +47,22 @@ class Camera(Object):
         rayOrigin = self.origin
 
         totalDistance = 0
-        dist, obj = self.scene.project(rayOrigin)
-        while dist > 0.01:
+        dist, obj, plane = self.scene.project(rayOrigin)
+        while dist > 0.001:
             totalDistance += dist
             rayOrigin += rayDirection * dist
-            dist, obj = self.scene.project(rayOrigin)
+            dist, obj, plane = self.scene.project(rayOrigin)
             if totalDistance > self.depth:
-                return None, None
+                return None, None, None
 
-        return rayOrigin, obj
+        # print(rayOrigin, dist)
+        return rayOrigin, obj, plane
 
     def __cast_ray_color(self, x, y):
-        _, obj = self.__cast_ray(x, y)
+        pt, obj, plane = self.__cast_ray(x, y)
         if obj is None:
             return self.scene.backgroundColor
-        return obj.color
+        return self.scene.get_color(pt, obj, plane)
 
     def get_image(self):
         """Get the image of the objects from the camera."""
@@ -64,17 +70,10 @@ class Camera(Object):
         return np.array(
             [
                 [
-                    self.__cast_ray_color(x - self.resolution[1], y - self.resolution[0])
+                    self.__cast_ray_color(x - self.resolution[1] / 2, self.resolution[0] / 2 - y)
                     for x in range(self.resolution[1])
                 ]
                 for y in range(self.resolution[0])
-            ]
+            ],
+            dtype=np.uint8,
         )
-
-        # image = np.ones((self.resolution[1], self.resolution[0], 3), np.uint8) * self.scene.backgroundColor
-
-        # for y in range(self.resolution[0]):
-        #     for x in range(self.resolution[1]):
-        #         image[y, x] = self.__cast_ray_color(x - self.resolution[1], y - self.resolution[0])
-
-        # return image

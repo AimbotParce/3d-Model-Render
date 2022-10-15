@@ -1,10 +1,13 @@
 import numpy as np
+from bin.lightClass import Light
 from bin.objectClass import Object
+from bin.planeClass import Plane
 
 
 class Scene:
-    def __init__(self, objects: list[Object], backgroundColor: tuple):
+    def __init__(self, objects: list[Object], lights: list[Light], backgroundColor: tuple):
         self.objects = objects
+        self.lights = lights
         self.backgroundColor = backgroundColor
 
     def set_background_color(self, color: tuple):
@@ -12,13 +15,27 @@ class Scene:
 
     def project(self, pt):
         """Get the distance from point to scene."""
-        dists = [obj.project(pt) for obj in self.objects]
+        distsNplanes = [obj.project(pt) for obj in self.objects]
+        dists = [distsNplanes[i][0] for i in range(len(distsNplanes))]
 
         minIdx = np.argmin(dists)
-        return dists[minIdx], self.objects[minIdx]
+        return dists[minIdx], self.objects[minIdx], distsNplanes[minIdx][1]
 
     def add_object(self, obj: Object):
         self.objects.append(obj)
+
+    def get_color(self, pt, obj: Object, plane: Plane):
+        """Get the color of the object at point pt."""
+        # Compute the total light at point pt:
+        totalLight = np.array([0.0, 0.0, 0.0])
+        for light in self.lights:
+            lightIntensity = light.get_intensity(pt, plane)
+            if lightIntensity > 0:
+                totalLight += lightIntensity * light.color / 255
+
+        totalLight = np.clip(totalLight, 0, 1)
+        # Compute the color of the object at point pt:
+        return obj.color * totalLight
 
     def get_objects(self):
         return self.objects

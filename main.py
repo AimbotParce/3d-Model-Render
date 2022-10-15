@@ -4,21 +4,45 @@ import cv2
 
 from obj.camera import Camera
 from obj.cube import Cube
+from obj.pointLight import PointLight
 from obj.scene import Scene
-
-testCube = Cube("testCube", (0, 0, 0), [0, 0, 0], [0, 0, 0], [1, 1, 1])
-
-testScene = Scene([testCube], (246, 186, 108))
-
-testCamera = Camera("testCamera", [-5, 0, 0], [0, 0, 0], 5, [100, 100], 100, testScene)
+from obj.squarePlane import Square
 
 
-start = datetime.now()
-print(f"[{start.strftime('%H:%M:%S')}] Rendering...")
-cv2.startWindowThread()
-cv2.namedWindow("Image", cv2.WINDOW_FREERATIO)
-img = testCamera.get_image()
-print(f"[{datetime.now().strftime('%H:%M:%S')}] Done! ({datetime.now() - start})")
-print(img.shape)
-cv2.imshow("Image", img)
-cv2.waitKey(0)
+def main():
+    testCube = Cube(name="testCube", color=(255, 255, 255), origin=[0, 0, 0], rotation=[45, 45, 0], scale=[1, 1, 1])
+
+    testPlane = Square(
+        name="testPlane", color=(80, 200, 126), origin=[0, 0, -2], rotation=[0, 0, 0], scale=[1, 1, 1], infinite=True
+    )
+
+    testLight = PointLight(name="testLight", color=(255, 255, 255), origin=[-3, 1, 1], brightness=10)
+
+    testScene = Scene(objects=[testCube, testPlane], lights=[testLight], backgroundColor=(246, 186, 108))
+
+    testCamera = Camera(
+        name="testCamera",
+        origin=[-3, 0, 0],
+        rotation=[0, 0, 0],
+        resolution=[60, 60],
+        sensor=(0.01, 0.01),  # Square sensor
+        focal=0.006,
+        depth=10,
+        scene=testScene,
+    )
+
+    start = datetime.now()
+    print(f"[{start.strftime('%H:%M:%S')}] Rendering...")
+
+    cv2.startWindowThread()
+    cv2.namedWindow("Image", cv2.WINDOW_NORMAL)
+
+    img = testCamera.get_image()
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Done! ({datetime.now() - start})")
+
+    cv2.imshow("Image", img)
+    cv2.waitKey(0)
+
+
+if __name__ == "__main__":
+    main()

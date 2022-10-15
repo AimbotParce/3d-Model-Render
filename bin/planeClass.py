@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Plane:
-    def __init__(self, pt1, pt2, pt3, color=(255, 255, 255), isinfinite=False):
+    def __init__(self, pt1, pt2, pt3, color=(255, 255, 255), infinite=False):
         self.pt1 = pt1
         self.pt2 = pt2
         self.pt3 = pt3
@@ -14,7 +14,7 @@ class Plane:
         self.v13 = pt3 - pt1
         self.v23 = pt3 - pt2
 
-        self.isinfinite = isinfinite
+        self.infinite = infinite
         self.normal = self.__get_normal()
 
     def __get_normal(self):
@@ -24,22 +24,21 @@ class Plane:
     def project(self, pt) -> Union[float, np.ndarray]:
         """Get the distance from point to plane."""
 
-        planeDist = self.normal.dot(pt - self.pt1)
+        planeDist = np.dot(self.normal, pt - self.pt1)
+
+        if self.infinite:
+            return np.abs(planeDist)
 
         # Get orthonormal projection of pt onto plane
         projPt = pt - planeDist * self.normal
 
-        if self.isinfinite:
-            return planeDist
-
         # Check if projected point is within triangle
-        isIn = (
+        if (
             self.normal.dot(np.cross(self.v12, projPt - self.pt1)) >= 0
             and self.normal.dot(np.cross(self.v23, projPt - self.pt2)) >= 0
-            and self.normal.dot(-np.cross(self.v13, projPt - self.pt3)) >= 0
-        )
-        if isIn:
-            return planeDist
+            and self.normal.dot(np.cross(-self.v13, projPt - self.pt3)) >= 0
+        ):
+            return np.abs(planeDist)
 
         # Projected point is outside triangle, find closest point on triangle
         # Get closest point on each edge
@@ -50,7 +49,7 @@ class Plane:
         ]
 
         # Get distance to each edge
-        dist = [np.linalg.norm(edge - projPt) for edge in edges]
+        dist = [np.linalg.norm(edge - pt) for edge in edges]
         # Find closest edge
         # minIdx = np.argmin(dist)
         return min(dist)

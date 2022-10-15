@@ -24,7 +24,8 @@ class Object:
     def project(self, pt):
         """Get the distance from point to object."""
         dists = [plane.project(pt) for plane in self.planes]
-        return min(dists)
+        minIdx = np.argmin(dists)
+        return dists[minIdx], self.planes[minIdx]
 
     def apply_transformation(self, translation, rotation, scale):
         """Apply a transformation to the object."""
