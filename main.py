@@ -38,8 +38,10 @@ def main():
     cv2.namedWindow("Image", cv2.WINDOW_NORMAL)
 
     img = testCamera.get_image()
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Done! ({datetime.now() - start})")
+    finish = datetime.now()
+    print(f"[{finish.strftime('%H:%M:%S')}] Done! ({finish - start})")
 
+    cv2.imwrite(f"renders/Render_{finish.strftime('%m_%d_%H_%M_%S')}.png", img)
     cv2.imshow("Image", img)
     cv2.waitKey(0)
 
