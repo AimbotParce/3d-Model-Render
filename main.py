@@ -24,7 +24,7 @@ def main():
         name="testCamera",
         origin=[-3, 0, 0],
         rotation=[0, 0, 0],
-        resolution=[60, 60],
+        resolution=[40, 40],
         sensor=(0.01, 0.01),  # Square sensor
         focal=0.006,
         depth=10,
