@@ -5,7 +5,7 @@ from bin.planeClass import Plane
 
 
 class Scene:
-    def __init__(self, objects: list[Object], lights: list[Light], backgroundColor: tuple):
+    def __init__(self, backgroundColor: tuple = (0, 0, 0), objects: list[Object] = [], lights: list[Light] = []):
         self.objects = objects
         self.lights = lights
         self.backgroundColor = backgroundColor
@@ -23,6 +23,9 @@ class Scene:
 
     def add_object(self, obj: Object):
         self.objects.append(obj)
+
+    def add_light(self, light: Light):
+        self.lights.append(light)
 
     def get_color(self, pt, obj: Object, plane: Plane):
         """Get the color of the object at point pt."""
