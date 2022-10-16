@@ -7,7 +7,6 @@ class Object:
         Rotation is a list of the euler angles (in deg).
         Scale is a list of the scale factors in each direction."""
         self.name = name
-        self.color = color
         self.rotation = rotation
         self.scale = scale
         self.origin = (0, 0, 0)
@@ -17,8 +16,12 @@ class Object:
         self.points = self.vertices.copy()
         self.apply_transformation(origin, rotation, scale)
         self.planes = self.get_planes()
+        self.set_color(color)
 
     def set_color(self, color):
+        """You can rewrite this method to change how the color is set. For example, each plane can be a different color."""
+        for plane in self.planes:
+            plane.color = color
         self.color = color
 
     def project(self, pt):

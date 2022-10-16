@@ -12,29 +12,29 @@ class Cube(Object):
     def get_vertices(self):
         return np.array(
             [
-                [1 / 2, 1 / 2, 1 / 2],  # Front right top     0
-                [1 / 2, 1 / 2, -1 / 2],  # Front right bottom 1
-                [1 / 2, -1 / 2, 1 / 2],  # Front left top     2
-                [1 / 2, -1 / 2, -1 / 2],  # Front left bottom 3
-                [-1 / 2, 1 / 2, 1 / 2],  # Back right top     4
-                [-1 / 2, 1 / 2, -1 / 2],  # Back right bottom 5
-                [-1 / 2, -1 / 2, 1 / 2],  # Back left top     6
-                [-1 / 2, -1 / 2, -1 / 2],  # Back left bottom 7
+                [-1 / 2, -1 / 2, 1 / 2],  # Front right top
+                [1 / 2, -1 / 2, 1 / 2],  # Back right top
+                [1 / 2, 1 / 2, 1 / 2],  # Back left top
+                [-1 / 2, 1 / 2, 1 / 2],  # Front left top
+                [-1 / 2, 1 / 2, -1 / 2],  # Front left bottom
+                [1 / 2, 1 / 2, -1 / 2],  # Back left bottom
+                [1 / 2, -1 / 2, -1 / 2],  # Back right bottom
+                [-1 / 2, -1 / 2, -1 / 2],  # Front right bottom
             ]
         )
 
     def get_planes(self):
         return [
-            Plane(self.points[0], self.points[1], self.points[2]),  # Front 1
-            Plane(self.points[1], self.points[3], self.points[2]),  # Front 2
-            Plane(self.points[4], self.points[5], self.points[6]),  # Back 1
-            Plane(self.points[5], self.points[7], self.points[6]),  # Back 2
-            Plane(self.points[0], self.points[1], self.points[4]),
-            Plane(self.points[1], self.points[5], self.points[4]),
-            Plane(self.points[2], self.points[3], self.points[6]),
-            Plane(self.points[3], self.points[7], self.points[6]),
-            Plane(self.points[0], self.points[2], self.points[4]),
-            Plane(self.points[2], self.points[6], self.points[4]),
-            Plane(self.points[1], self.points[3], self.points[5]),
-            Plane(self.points[3], self.points[7], self.points[5]),
+            Plane(self.points[0], self.points[1], self.points[2]),  # Top
+            Plane(self.points[2], self.points[3], self.points[0]),  # Top
+            Plane(self.points[1], self.points[6], self.points[5]),  # Back
+            Plane(self.points[5], self.points[2], self.points[1]),  # Back
+            Plane(self.points[6], self.points[7], self.points[4]),  # Bottom
+            Plane(self.points[4], self.points[5], self.points[6]),  # Bottom
+            Plane(self.points[7], self.points[0], self.points[3]),  # Front
+            Plane(self.points[3], self.points[4], self.points[7]),  # Front
+            Plane(self.points[6], self.points[1], self.points[0]),  # Right
+            Plane(self.points[0], self.points[7], self.points[6]),  # Right
+            Plane(self.points[2], self.points[5], self.points[4]),  # Left
+            Plane(self.points[4], self.points[3], self.points[2]),  # Left
         ]

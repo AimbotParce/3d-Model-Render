@@ -35,7 +35,7 @@ class Scene:
 
         totalLight = np.clip(totalLight, 0, 1)
         # Compute the color of the object at point pt:
-        return obj.color * totalLight
+        return plane.color * totalLight
 
     def get_objects(self):
         return self.objects

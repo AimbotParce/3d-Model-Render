@@ -24,4 +24,4 @@ class PointLight(Light):
         distance = np.linalg.norm(lightVector)
         lightVector /= distance
         # Compute the light intensity:
-        return np.abs(np.dot(plane.normal, lightVector) * self.brightness / (distance**2))
+        return np.dot(plane.normal, lightVector) * self.brightness / (distance**2)

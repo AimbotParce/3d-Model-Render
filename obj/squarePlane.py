@@ -12,10 +12,10 @@ class Square(Object):
     def get_vertices(self):
         return np.array(
             [
-                [-1 / 2, -1 / 2, 0],
-                [1 / 2, -1 / 2, 0],
-                [1 / 2, 1 / 2, 0],
-                [-1 / 2, 1 / 2, 0],
+                [-1 / 2, -1 / 2, 0],  # Front right
+                [1 / 2, -1 / 2, 0],  # Back right
+                [1 / 2, 1 / 2, 0],  # Back left
+                [-1 / 2, 1 / 2, 0],  # Front left
             ]
         )
 
@@ -24,5 +24,5 @@ class Square(Object):
             return [Plane(self.points[0], self.points[1], self.points[2], infinite=True)]
         return [
             Plane(self.points[0], self.points[1], self.points[2]),
-            Plane(self.points[1], self.points[3], self.points[2]),
+            Plane(self.points[2], self.points[3], self.points[0]),
         ]

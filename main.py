@@ -4,7 +4,8 @@ import cv2
 
 from obj.camera import Camera
 from obj.cube import Cube
-from obj.pointLight import PointLight
+from obj.light.pointLight import PointLight
+from obj.light.sunLight import Sun
 from obj.scene import Scene
 from obj.squarePlane import Square
 
@@ -13,21 +14,27 @@ def main():
     testCube = Cube(name="testCube", color=(255, 255, 255), origin=[0, 0, 0], rotation=[45, 45, 0], scale=[1, 1, 1])
 
     testPlane = Square(
-        name="testPlane", color=(80, 200, 126), origin=[0, 0, -2], rotation=[0, 0, 0], scale=[1, 1, 1], infinite=True
+        name="testPlane",
+        color=(80, 200, 126),
+        origin=[0, 0, -2],
+        rotation=[0, 0, 0],
+        scale=[100, 100, 1],
+        infinite=True,
     )
 
     testLight = PointLight(name="testLight", color=(255, 255, 255), origin=[-3, 1, 1], brightness=10)
+    testSunLight = Sun(name="testSunLight", color=(255, 255, 255), rotation=[0, 0, 0], brightness=1)
 
-    testScene = Scene(objects=[testCube, testPlane], lights=[testLight], backgroundColor=(246, 186, 108))
+    testScene = Scene(objects=[testCube, testPlane], lights=[testSunLight, testLight], backgroundColor=(246, 186, 108))
 
     testCamera = Camera(
         name="testCamera",
         origin=[-3, 0, 0],
         rotation=[0, 0, 0],
-        resolution=[40, 40],
-        sensor=(0.01, 0.01),  # Square sensor
+        resolution=[40, 40],  # Y, x
+        sensor=(0.01, 0.01),  # Y, x
         focal=0.006,
-        depth=10,
+        depth=30,
         scene=testScene,
     )
 
