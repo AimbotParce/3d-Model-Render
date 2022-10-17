@@ -6,6 +6,7 @@ from obj.camera import Camera
 from obj.cube import Cube
 from obj.light.pointLight import PointLight
 from obj.light.sunLight import Sun
+from obj.macros.pyramid import Pyramid
 from obj.scene import Scene
 from obj.squarePlane import Square
 
@@ -14,9 +15,9 @@ def main():
     scene = Scene(backgroundColor=(246, 186, 108))
 
     # Add objects:
-    scene.add_object(
-        Cube(name="testCube", color=(255, 255, 255), origin=[0, 0, -1.5], rotation=[0, 0, -30], scale=[1, 1, 1])
-    )
+    # scene.add_object(
+    #     Cube(name="testCube", color=(255, 255, 255), origin=[0, 0, -1.5], rotation=[0, 0, -30], scale=[1, 1, 1])
+    # )
     scene.add_object(
         Square(
             name="testPlane",
@@ -27,6 +28,9 @@ def main():
             infinite=True,
         )
     )
+    scene.add_object(
+        Pyramid(name="testPyramid", color=(255, 100, 0), origin=[0, 0, 0], rotation=[0, 0, 0], scale=[1, 1, 1])
+    )
 
     # Add lights:
     scene.add_light(PointLight(name="testLight", color=(255, 255, 255), origin=[-3, 1, 1], brightness=10))
@@ -34,11 +38,11 @@ def main():
 
     camera = Camera(
         name="testCamera",
-        origin=[-3, 0, 0],
-        rotation=[0, 0, 0],
-        resolution=[190, 190],  # Y, x
+        origin=[-5, 0, 2],
+        rotation=[0, -30, 0],
+        resolution=[50, 50],  # Y, x
         sensor=(0.01, 0.01),  # Y, x
-        focal=0.006,
+        focal=0.005,
         depth=30,
         scene=scene,
     )
