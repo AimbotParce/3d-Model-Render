@@ -15,22 +15,22 @@ def main():
     scene = Scene(backgroundColor=(246, 186, 108))
 
     # Add objects:
+    scene.add_object(
+        Cube(name="testCube", color=(255, 255, 255), origin=[0, 0, 0], rotation=[0, 0, 0], scale=[1, 1, 1])
+    )
     # scene.add_object(
-    #     Cube(name="testCube", color=(255, 255, 255), origin=[0, 0, -1.5], rotation=[0, 0, -30], scale=[1, 1, 1])
+    #     Square(
+    #         name="testPlane",
+    #         color=(80, 200, 126),
+    #         origin=[0, 0, -2],
+    #         rotation=[0, 0, 0],
+    #         scale=[100, 100, 1],
+    #         infinite=True,
+    #     )
     # )
-    scene.add_object(
-        Square(
-            name="testPlane",
-            color=(80, 200, 126),
-            origin=[0, 0, -2],
-            rotation=[0, 0, 0],
-            scale=[100, 100, 1],
-            infinite=True,
-        )
-    )
-    scene.add_object(
-        Pyramid(name="testPyramid", color=(255, 100, 0), origin=[0, 0, 0], rotation=[0, 0, 0], scale=[1, 1, 1])
-    )
+    # scene.add_object(
+    #     Pyramid(name="testPyramid", color=(255, 100, 0), origin=[0, 0, 0], rotation=[0, 0, 0], scale=[1, 1, 1])
+    # )
 
     # Add lights:
     scene.add_light(PointLight(name="testLight", color=(255, 255, 255), origin=[-3, 1, 1], brightness=10))
@@ -38,9 +38,9 @@ def main():
 
     camera = Camera(
         name="testCamera",
-        origin=[-5, 0, 2],
-        rotation=[0, -30, 0],
-        resolution=[50, 50],  # Y, x
+        origin=[-6, 0, 0],
+        rotation=[0, 0, 0],
+        resolution=[1920, 1080],  # Y, x
         sensor=(0.01, 0.01),  # Y, x
         focal=0.005,
         depth=30,

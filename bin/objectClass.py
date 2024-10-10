@@ -49,10 +49,14 @@ class Object:
         Rz = np.array(
             [[np.cos(rotation[2]), -np.sin(rotation[2]), 0], [np.sin(rotation[2]), np.cos(rotation[2]), 0], [0, 0, 1]]
         )
-        self.points = self.points @ Rx @ Ry @ Rz
+        self.rotation_matrix = Rz @ Ry @ Rx
+        self.points = self.points @ self.rotation_matrix
 
         # Apply translation:
         self.points = self.points + translation
+
+    def get_points(self):
+        return self.points
 
     def get_vertices(self):
         """

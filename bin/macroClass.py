@@ -31,3 +31,6 @@ class Macro(Object):
         distsNplanes = np.array([obj.project(pt) for obj in self.objects])
         minIdx = np.argmin(distsNplanes[:, 0])
         return distsNplanes[minIdx]
+
+    def get_points(self):
+        return np.concatenate([obj.get_points() for obj in self.objects])

@@ -27,10 +27,29 @@ class Camera(Object):
         self.vx = self.points[1] - self.points[0]
         self.vy = self.points[2] - self.points[0]
         self.vz = self.points[3] - self.points[0]
+        self.camera_matrix = self.__compute_camera_matrix()
 
     def get_planes(self):
         """I don't need planes for the camera."""
         return []
+
+    def __compute_camera_matrix(self):
+        """Compute the camera matrix."""
+        ku = self.resolution[1] / self.sensor[1]
+        kv = self.resolution[0] / self.sensor[0]
+        C = np.array(
+            [[self.focal * kv, 0, self.resolution[0] / 2], [0, -self.focal * ku, self.resolution[1] / 2], [0, 0, 1]]
+        )
+        R = self.rotation_matrix
+        RT = np.zeros((4, 4))
+        RT[:3, :3] = R
+        RT[:3, 3] = self.origin
+        RT[3, 3] = 1
+
+        middle = np.zeros((3, 4))
+        middle[:3, :3] = np.eye(3)
+
+        return C @ middle @ RT
 
     def __get_ray_direction(self, x, y):
         """Get the ray from the camera origin to the pixel (x, y)."""
@@ -64,7 +83,7 @@ class Camera(Object):
             return self.scene.backgroundColor
         return self.scene.get_color(pt, obj, plane)
 
-    def get_image(self):
+    def get_image_raycasting(self):
         """Get the image of the objects from the camera."""
 
         return np.array(
@@ -77,3 +96,25 @@ class Camera(Object):
             ],
             dtype=np.uint8,
         )
+
+    def get_image(self):
+        """Get the image of the objects from the camera."""
+        img = np.zeros((self.resolution[0], self.resolution[1], 3), dtype=np.uint8)
+        relativePts = np.concatenate([obj.get_points() for obj in self.scene.objects]) - self.origin
+        points = np.ones((len(relativePts), 4))
+        points[:, :3] = relativePts
+
+        projections = (points @ self.camera_matrix.T).astype(int)[:, :2]
+        print(projections)
+
+        indx = np.logical_and(
+            np.logical_and((projections[:, 0] >= 0), (projections[:, 0] < self.resolution[1])),
+            np.logical_and((projections[:, 1] >= 0), (projections[:, 1] < self.resolution[0])),
+        )
+
+        projections = projections[indx]
+        print(projections)
+
+        img[projections + (np.array(self.resolution) / 2).astype(int)] = (255, 255, 255)
+
+        return img
