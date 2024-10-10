@@ -1,2 +1,4 @@
 renders/*
 !renders/.gitkeep
+*.pyc
+/__pycache__/
